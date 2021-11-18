@@ -1,8 +1,21 @@
 <template>
-    <div class="container">
-       <h3>{{ label }}</h3>
-       <span>{{ timeLeft }}</span>
-       <button v-on:click="removeCallback">Complete</button>
+    <div class="box level p-2 has-background-primary-light">
+        <div class="level-left">
+            <h3 class="mx-1">{{ label }}</h3>
+        </div>
+        <div class="level-right">
+            <span class="mx-4">{{ timeLeft }}</span>
+            <button v-if="!completed" class="button is-success is-outlined mx-1" v-on:click="complete">
+                <span class="icon is-small">
+                    <font-awesome-icon icon="check" ></font-awesome-icon>
+                </span>
+            </button>
+            <button class="button is-danger is-outlined mx-1" v-on:click="remove">
+                <span class="icon is-small">
+                    <font-awesome-icon icon="times" ></font-awesome-icon>
+                </span>
+            </button>
+        </div>
     </div>
 </template>
 
@@ -15,19 +28,25 @@ dayjs.extend(relativeTime)
 export default {
     name: "ToDoItem",
     props: {
+        id: Number,
         label: String,
         deadline: Date,
+        completedCallback: Function,
         removeCallback: Function,
-    },
-    data: () => {
-        return { 
-            isComplete: false,
-        }
+        completed: Boolean,
     },
     computed: {
         timeLeft(){ 
             return dayjs(this.deadline).fromNow()
         },
+    },
+    methods: {
+        complete() {
+            this.completedCallback(this.id);
+        },
+        remove() {
+            this.removeCallback(this.id);
+        }
     }
 }
 </script>
